@@ -28,9 +28,8 @@ def writefile(fname, data):
     os.mkdir(sample)
     b_s = io.BytesIO()
     scipy.io.mmwrite(b_s, matrix)
-    f_out = gzip.open(os.path.join(sample, 'matrix.mtx.gz'), 'wb')
-    f_out.write(b_s.getvalue())
-    f_out.close()
+    with gzip.open(os.path.join(sample, 'matrix.mtx.gz'), 'wb') as f_out:
+        f_out.write(b_s.getvalue())
     write_to_gzip(
         range(len(genes)), os.path.join(sample, 'features.tsv.gz'), lambda i:
         genes[i].decode('UTF-8') + '\t' + gene_names[i].decode('UTF-8') + '\n')
@@ -39,9 +38,8 @@ def writefile(fname, data):
 
 
 def write_to_gzip(iter, output, line_mod=lambda x: x):
-    f_out = gzip.open(output, 'wb')
-    f_out.writelines([line_mod(i).encode('utf8') for i in iter])
-    f_out.close()
+    with gzip.open(output, 'wb') as f_out:
+        f_out.writelines([line_mod(i).encode('utf8') for i in iter])
 
 
 if __name__ == "__main__":
